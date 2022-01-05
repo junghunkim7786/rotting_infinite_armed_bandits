@@ -1,1 +1,1 @@
-# rotting_many_armed_bandits
+# rotting_bandits
