@@ -17,8 +17,8 @@
 ## How to run this code
 Please run this command:
 
- * For getting the results in Figure 1 (a):\
+ * For getting the results in Figure 2 (a):\
  python3 main.py 1
 
- * For getting the results in Figure 1 (b,c,d):\
+ * For getting the results in Figure 2 (b,c,d):\
  python3 main.py 2
