@@ -167,11 +167,9 @@ def run_T(ratio,T,num,repeat,boolean=True): #regret vs T
 
     # get handles
     handles, labels = ax.get_legend_handles_labels()
-    # remove the errorbars
     handles = [h[0] for h in handles]
-    # use them in the legend
     ax.legend(handles, labels,numpoints=1)
-    
+    # plot
     plt.xlabel('T')
     plt.ylabel('E[R(T)]')
     plt.savefig('./result/T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'.png')
@@ -322,7 +320,7 @@ def run_rho(T,ratio_list,repeat,boolean=True): ## regret vs rho
     handles, labels = ax.get_legend_handles_labels()
     handles = [h[0] for h in handles]
     ax.legend(handles, labels,numpoints=1)
-    
+    # plot
     plt.xlabel('γ')
     plt.ylabel('E[R(T)]')
     plt.savefig('./result/T'+str(T)+'repeat'+str(repeat)+'ratio_list'+str(ratio_list)+'.png')
