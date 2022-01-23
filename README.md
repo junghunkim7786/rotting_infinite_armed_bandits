@@ -15,7 +15,7 @@
   This file includes the code for bandit algorithms.
 
 ## How to run this code
-Please run this command:
+Please run these commands:
 
  * For getting the results in Figure 2 (a):\
  python3 main.py 1
