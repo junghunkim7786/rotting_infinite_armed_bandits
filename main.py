@@ -12,7 +12,7 @@ from pathlib import Path
 
 
 
-def run_linear(ratio,T,num,repeat,boolean=True):
+def run_T(ratio,T,num,repeat,boolean=True): #regret vs T
     T_1=int(T/num)
     num=num+1
     std_list1=np.zeros(num)
@@ -49,12 +49,12 @@ def run_linear(ratio,T,num,repeat,boolean=True):
             for j in range(repeat):
                 print('repeat: ',j)
                 seed=j
-                Env=linear_rotting_many_Env(rho,seed,T)
-                algorithm1=linear_rotting(delta,rho,T,seed,Env)
-                Env=linear_rotting_many_Env(rho,seed,T)
+                Env=rotting_many_Env(rho,seed,T)
+                algorithm1=UCB_TP(delta,rho,T,seed,Env)
+                Env=rotting_many_Env(rho,seed,T)
                 algorithm2=SSUCB(K,T,seed,Env)
-                Env=linear_rotting_many_Env(rho,seed,T)
-                algorithm3=bob_rotting(T,seed,Env)
+                Env=rotting_many_Env(rho,seed,T)
+                algorithm3=AUCB_TP(T,seed,Env)
                 opti_rewards=Env.optimal
 
                 regret=opti_rewards-algorithm1.rewards()
@@ -97,14 +97,15 @@ def run_linear(ratio,T,num,repeat,boolean=True):
             regret_list3[i]=avg3[T-1]
             std_list3[i]=sd3[T-1]
             
-            Path("./result").mkdir(parents=True, exist_ok=True)
+            
             ##Save data
-            filename_1='linear_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'regret.txt'
+            Path("./result").mkdir(parents=True, exist_ok=True)
+            filename_1='T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'regret.txt'
             with open('./result/'+filename_1, 'wb') as f:
                 pickle.dump(regret, f)
                 f.close()
 
-            filename_2='linear_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'std.txt'
+            filename_2='T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'std.txt'
             with open('./result/'+filename_2, 'wb') as f:
                 pickle.dump(std, f)
                 f.close()
@@ -120,8 +121,8 @@ def run_linear(ratio,T,num,repeat,boolean=True):
                 T=T_1*k
             rho=1/T**ratio
             T_list[i]=T
-            filename_1='linear_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'regret.txt'
-            filename_2='linear_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'std.txt'
+            filename_1='T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'regret.txt'
+            filename_2='T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'std.txt'
             pickle_file1 = open('./result/'+filename_1, "rb")
             pickle_file2 = open('./result/'+filename_2, "rb")
             objects = []
@@ -154,48 +155,43 @@ def run_linear(ratio,T,num,repeat,boolean=True):
             std_list2[i]=sd2[T-1]
             regret_list3[i]=avg3[T-1]
             std_list3[i]=sd3[T-1]
+            
+    fig,(ax)=plt.subplots(1,1)
 
-   
-    plt.errorbar(x=T_list, y=regret_list1, yerr=1.96*std_list1/np.sqrt(repeat), color="orange", capsize=6,
-                 marker="^", markersize=7,label='Algorithm 1')
-    plt.errorbar(x=T_list, y=regret_list3, yerr=1.96*std_list3/np.sqrt(repeat), color="b", capsize=6,
-                 marker="o", markersize=7,label='Algorithm 2')
-    plt.errorbar(x=T_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=6,
-                 marker="s", markersize=7,label='SSUCB')
+    ax.errorbar(x=T_list, y=regret_list1, yerr=1.96*std_list1/np.sqrt(repeat), color="orange", capsize=3,
+                 marker="^", markersize=7,label='Algorithm 1',zorder=3) 
+    ax.errorbar(x=T_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
+                 marker="s", markersize=7,label='SSUCB',zorder=1)
+    ax.errorbar(x=T_list, y=regret_list3, yerr=1.96*std_list3/np.sqrt(repeat), color="b", capsize=3,
+                 marker="o", markersize=7,label='Algorithm 2',zorder=2)
 
+    # get handles
+    handles, labels = ax.get_legend_handles_labels()
+    # remove the errorbars
+    handles = [h[0] for h in handles]
+    # use them in the legend
+    ax.legend(handles, labels,numpoints=1)
+    
     plt.xlabel('T')
     plt.ylabel('E[R(T)]')
-    plt.legend()
-    plt.savefig('./result/linear_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'.png')
+    plt.savefig('./result/T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'.png')
     plt.show()
     plt.clf()    
 
-
-def run_exp(ratio,T,num,repeat,boolean=True):
-    T_1=int(T/num)
-    num=num+1
+def run_rho(T,ratio_list,repeat,boolean=True): ## regret vs rho
+    num=len(ratio_list)
     std_list1=np.zeros(num)
     regret_list1=np.zeros(num)
     std_list2=np.zeros(num)
     regret_list2=np.zeros(num)
     std_list3=np.zeros(num)
     regret_list3=np.zeros(num)
-    std_list4=np.zeros(num)
-    regret_list4=np.zeros(num)
-    T_list=np.zeros(num)
-    if boolean:
-        
-        for i in range(num):
+    if boolean: ##save data
+        for i, ratio in enumerate(ratio_list):
             print(i)
-            if i==0:
-                T=1
-            else:
-                T=T_1*i
-            rho=1/T**ratio
+            rho=(1/T)**ratio
             delta=rho**(1/3)
-            T_list[i]=T
-            K=math.ceil(math.sqrt(T))
-            K_2=math.ceil(T**(2/3))
+            K=math.ceil(math.sqrt(T)) ##number of subsampled arms in SSUCB
             regret=np.zeros(T,float)
             regret_sum=np.zeros(T,float)
             regret_sum_list1=np.zeros((repeat,T),float)
@@ -212,12 +208,12 @@ def run_exp(ratio,T,num,repeat,boolean=True):
             for j in range(repeat):
                 print('repeat: ',j)
                 seed=j
-                Env=exponential_rotting_many_Env(rho,seed,T)
-                algorithm1=exponential_rotting(delta,rho,T,seed,Env)
-                Env=exponential_rotting_many_Env(rho,seed,T)
+                Env=rotting_many_Env(rho,seed,T)
+                algorithm1=UCB_TP(delta,rho,T,seed,Env)
+                Env=rotting_many_Env(rho,seed,T)
                 algorithm2=SSUCB(K,T,seed,Env)
-                Env=exponential_rotting_many_Env(rho,seed,T)
-                algorithm3=bob_rotting(T,seed,Env)
+                Env=rotting_many_Env(rho,seed,T)
+                algorithm3=AUCB_TP(T,seed,Env)
                 opti_rewards=Env.optimal
 
                 regret=opti_rewards-algorithm1.rewards()
@@ -261,29 +257,25 @@ def run_exp(ratio,T,num,repeat,boolean=True):
             std_list3[i]=sd3[T-1]
             
             ##Save data
-            filename_1='exp_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'regret.txt'
+
+            Path("./result").mkdir(parents=True, exist_ok=True)
+            filename_1='T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'regret.txt'
             with open('./result/'+filename_1, 'wb') as f:
                 pickle.dump(regret, f)
                 f.close()
 
-            filename_2='exp_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'std.txt'
+            filename_2='T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'std.txt'
             with open('./result/'+filename_2, 'wb') as f:
                 pickle.dump(std, f)
                 f.close()
     
     else: ##load data
         
-        for i in range(num):
+        for i, ratio in enumerate(ratio_list):
             print(i)
-            if i==0:
-                T=1
-            else:
-                k=i
-                T=T_1*k
             rho=1/T**ratio
-            T_list[i]=T
-            filename_1='exp_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'regret.txt'
-            filename_2='exp_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'std.txt'
+            filename_1='T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'regret.txt'
+            filename_2='T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'std.txt'
             pickle_file1 = open('./result/'+filename_1, "rb")
             pickle_file2 = open('./result/'+filename_2, "rb")
             objects = []
@@ -316,47 +308,49 @@ def run_exp(ratio,T,num,repeat,boolean=True):
             std_list2[i]=sd2[T-1]
             regret_list3[i]=avg3[T-1]
             std_list3[i]=sd3[T-1]
+            
+    fig,(ax)=plt.subplots(1,1)
+    ax.errorbar(x=ratio_list, y=regret_list1, yerr=1.96*std_list1/np.sqrt(repeat), color="orange", capsize=3,
+                 marker="^", markersize=7,label='Algorithm 1',zorder=3) 
+    ax.errorbar(x=ratio_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
+                 marker="s", markersize=7,label='SSUCB',zorder=1)
+    ax.errorbar(x=ratio_list, y=regret_list3, yerr=1.96*std_list3/np.sqrt(repeat), color="b", capsize=3,
+                 marker="o", markersize=7,label='Algorithm 2',zorder=2)
 
-   
-    plt.errorbar(x=T_list, y=regret_list1, yerr=1.96*std_list1/np.sqrt(repeat), color="orange", capsize=6,
-                 marker="^", markersize=7,label='Algorithm 1')
-    plt.errorbar(x=T_list, y=regret_list3, yerr=1.96*std_list3/np.sqrt(repeat), color="b", capsize=6,
-                 marker="o", markersize=7,label='Algorithm 2')
-    plt.errorbar(x=T_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=6,
-                 marker="s", markersize=7,label='SSUCB')
 
-    plt.xlabel('T')
+    # remove the errorbars in legend
+    handles, labels = ax.get_legend_handles_labels()
+    handles = [h[0] for h in handles]
+    ax.legend(handles, labels,numpoints=1)
+    
+    plt.xlabel('γ')
     plt.ylabel('E[R(T)]')
-    plt.legend()
-    plt.savefig('./result/exp_T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'.png')
+    plt.savefig('./result/T'+str(T)+'repeat'+str(repeat)+'ratio_list'+str(ratio_list)+'.png')
     plt.show()
     plt.clf()    
-
 
         
 if __name__=='__main__':
     # Read input
-    opt = int(sys.argv[1]) ##'1': figure1, '2': figure2
+    opt = int(sys.argv[1]) ##'1': a in Figure 2, '2': b,c,d in Figure 2
     
-    repeat=5  # repeat number of running algorithms with different seeds.
+    repeat=10  # repeat number of running algorithms with different seeds.
     run_bool=True ##  True: run model and save data with plot, False: load data with plot.
-    T=10**5  #Maximum Time horizon
+    T=10**6  #Maximum Time horizon
     num=10 # number of horizon times over T
     
-    if opt==1:
-        ratio=1/3 # s.t. rho=(1/T)**ratio
-        run_linear(ratio,T,num,repeat,run_bool)
+    if opt==1: #regret vs rho
+        ratio_list=[3/10,4/10,5/10,6/10,7/10,8/10,9/10,1] #rotting rate with 1/T^ratio
+        run_rho(T,ratio_list,repeat,run_bool)
+        
+    if opt==2: #regret vs T
+        ratio=3/5  #rotting rate with 1/T^ratio
+        run_T(ratio,T,num,repeat,run_bool)
         ratio=1/2
-        run_linear(ratio,T,num,repeat,run_bool)
+        run_T(ratio,T,num,repeat,run_bool)
         ratio=3/2
-        run_linear(ratio,T,num,repeat,run_bool)
-    if opt==2:
-        ratio=1/3
-        run_exp(ratio,T,num,repeat,run_bool)
-        ratio=1/2
-        run_exp(ratio,T,num,repeat,run_bool)
-        ratio=3/2
-        run_exp(ratio,T,num,repeat,run_bool)
+        run_T(ratio,T,num,repeat,run_bool)
+
 
 
 
