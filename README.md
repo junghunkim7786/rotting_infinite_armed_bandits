@@ -11,8 +11,8 @@
   * Environment.py\
   This file includes the code for generating an environment for rotting rewards with many arms. 
   
-  * Algorithm.py\
-  This file includes the code for bandit algorithms.
+  * Algorithms.py\
+  This file includes the code for bandit algorithms (UCB-TP, AUCB-TP, SSUCB).
 
 ## How to run this code
 Please run these commands:
