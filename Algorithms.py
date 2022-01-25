@@ -3,7 +3,7 @@ import numpy as np
 import math
 from numpy.random import seed
 from numpy.random import rand
-from Environments import *
+from Environment import *
 
 
 

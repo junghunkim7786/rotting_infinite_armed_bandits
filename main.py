@@ -1,4 +1,4 @@
-from Environments import *
+from Environment import *
 from Algorithms import *
 import random
 import numpy as np
@@ -333,7 +333,7 @@ if __name__=='__main__':
     opt = int(sys.argv[1]) ##'1': a in Figure 2, '2': b,c,d in Figure 2
     
     repeat=10  # repeat number of running algorithms with different seeds.
-    run_bool=True ##  True: run model and save data with plot, False: load data with plot.
+    run_bool=False ##  True: run model and save data with plot, False: load data with plot.
     T=10**6  #Maximum Time horizon
     num=10 # number of horizon times over T
     
@@ -342,9 +342,9 @@ if __name__=='__main__':
         run_rho(T,ratio_list,repeat,run_bool)
         
     if opt==2: #regret vs T
-        ratio=3/5  #rotting rate with 1/T^ratio
+        ratio=1/2  #rotting rate with 1/T^ratio
         run_T(ratio,T,num,repeat,run_bool)
-        ratio=1/2
+        ratio=3/5
         run_T(ratio,T,num,repeat,run_bool)
         ratio=3/2
         run_T(ratio,T,num,repeat,run_bool)
