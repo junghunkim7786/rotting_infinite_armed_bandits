@@ -6,32 +6,6 @@ from numpy.random import rand
 from Environments import *
 
 
-class SSUCB:
-    def __init__(self,K,T,seed,Environment):
-        print('SSUCB')
-                    
-        np.random.seed(seed)
-        self.Env=Environment
-        self.r=np.zeros(T,float)
-        self.r_Exp=np.zeros(T,float)
-        n=np.zeros(K)
-        mu=np.zeros(K)
-        ucb=np.zeros(K)
-        for t in range(T):
-            if t%1000==0:
-                print('Time: ',t+1)
-            if t<K:
-                k=t
-            else:         
-                k=np.argmax(ucb)    
-                
-            self.r_Exp[t],self.r[t]=self.Env.observe(k)
-            mu[k]=(mu[k]*(n[k])+self.r[t])/(n[k]+1)                
-            n[k]=n[k]+1
-            ucb[k]=mu[k]+math.sqrt(2*math.log(1+(t+1)*(math.log(t+1))**2)/n[k])
-            
-    def rewards(self):
-        return self.r_Exp  
 
 
     
@@ -106,5 +80,32 @@ class AUCB_TP:
                 w[j]=w[j]*math.exp(alpha/(B*p[j])*(1/2+self.r[i*H:H*(i+1)].sum()/(186*H*math.log(T)+4*math.sqrt(H*math.log(T)))))    
                 
     def rewards(self):
-        return self.r_Exp  
+        return self.r_Exp 
     
+    
+class SSUCB:
+    def __init__(self,K,T,seed,Environment):
+        print('SSUCB')
+                    
+        np.random.seed(seed)
+        self.Env=Environment
+        self.r=np.zeros(T,float)
+        self.r_Exp=np.zeros(T,float)
+        n=np.zeros(K)
+        mu=np.zeros(K)
+        ucb=np.zeros(K)
+        for t in range(T):
+            if t%1000==0:
+                print('Time: ',t+1)
+            if t<K:
+                k=t
+            else:         
+                k=np.argmax(ucb)    
+                
+            self.r_Exp[t],self.r[t]=self.Env.observe(k)
+            mu[k]=(mu[k]*(n[k])+self.r[t])/(n[k]+1)                
+            n[k]=n[k]+1
+            ucb[k]=mu[k]+math.sqrt(2*math.log(1+(t+1)*(math.log(t+1))**2)/n[k])
+            
+    def rewards(self):
+        return self.r_Exp  

@@ -160,10 +160,11 @@ def run_T(ratio,T,num,repeat,boolean=True): #regret vs T
 
     ax.errorbar(x=T_list, y=regret_list1, yerr=1.96*std_list1/np.sqrt(repeat), color="orange", capsize=3,
                  marker="^", markersize=7,label='Algorithm 1',zorder=3) 
-    ax.errorbar(x=T_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
-                 marker="s", markersize=7,label='SSUCB',zorder=1)
     ax.errorbar(x=T_list, y=regret_list3, yerr=1.96*std_list3/np.sqrt(repeat), color="b", capsize=3,
                  marker="o", markersize=7,label='Algorithm 2',zorder=2)
+    ax.errorbar(x=T_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
+                 marker="s", markersize=7,label='SSUCB',zorder=1)
+
 
     # remove the errorbars in legend
     handles, labels = ax.get_legend_handles_labels()
@@ -310,11 +311,10 @@ def run_rho(T,ratio_list,repeat,boolean=True): ## regret vs rho
     fig,(ax)=plt.subplots(1,1)
     ax.errorbar(x=ratio_list, y=regret_list1, yerr=1.96*std_list1/np.sqrt(repeat), color="orange", capsize=3,
                  marker="^", markersize=7,label='Algorithm 1',zorder=3) 
-    ax.errorbar(x=ratio_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
-                 marker="s", markersize=7,label='SSUCB',zorder=1)
     ax.errorbar(x=ratio_list, y=regret_list3, yerr=1.96*std_list3/np.sqrt(repeat), color="b", capsize=3,
                  marker="o", markersize=7,label='Algorithm 2',zorder=2)
-
+    ax.errorbar(x=ratio_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
+                 marker="s", markersize=7,label='SSUCB',zorder=1)
 
     # remove the errorbars in legend
     handles, labels = ax.get_legend_handles_labels()
