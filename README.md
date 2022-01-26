@@ -1,4 +1,4 @@
-# rotting_many_armed_bandits
+# rotting_infinitely_many_armed_bandits
 
 ## Requirement
  Python 3
