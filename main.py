@@ -164,15 +164,21 @@ def run_T(ratio,T,num,repeat,boolean=True): #regret vs T
                  marker="o", markersize=7,label='Algorithm 2',zorder=2)
     ax.errorbar(x=T_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
                  marker="s", markersize=7,label='SSUCB',zorder=1)
-
-
+    
+    #font size
+    ax.tick_params(labelsize=15)
+    plt.rc('legend',fontsize=15)
+    ax.yaxis.get_offset_text().set_fontsize(15)
+    ax.xaxis.get_offset_text().set_fontsize(15)
     # remove the errorbars in legend
     handles, labels = ax.get_legend_handles_labels()
     handles = [h[0] for h in handles]
     ax.legend(handles, labels,numpoints=1)
     # plot 
-    plt.xlabel('T')
-    plt.ylabel('E[R(T)]')
+    plt.gcf().subplots_adjust(bottom=0.15)
+    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+    plt.xlabel(r'$T$',fontsize=15)
+    plt.ylabel(r'E$[R^{\pi}(T)]$',fontsize=15)
     plt.savefig('./result/T'+str(T)+'repeat'+str(repeat)+'ratio'+str(ratio)+'.png')
     plt.show()
     plt.clf()    
@@ -307,7 +313,7 @@ def run_rho(T,ratio_list,repeat,boolean=True): ## regret vs rho
             std_list2[i]=sd2[T-1]
             regret_list3[i]=avg3[T-1]
             std_list3[i]=sd3[T-1]
-            
+    ratio_list=[(1/T)**(i/3) for i in ratio_list]
     fig,(ax)=plt.subplots(1,1)
     ax.errorbar(x=ratio_list, y=regret_list1, yerr=1.96*std_list1/np.sqrt(repeat), color="orange", capsize=3,
                  marker="^", markersize=7,label='Algorithm 1',zorder=3) 
@@ -315,14 +321,22 @@ def run_rho(T,ratio_list,repeat,boolean=True): ## regret vs rho
                  marker="o", markersize=7,label='Algorithm 2',zorder=2)
     ax.errorbar(x=ratio_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
                  marker="s", markersize=7,label='SSUCB',zorder=1)
+    
+    #font size
+    ax.tick_params(labelsize=15)
+    plt.rc('legend',fontsize=15)
+    ax.yaxis.get_offset_text().set_fontsize(15)
+    ax.xaxis.get_offset_text().set_fontsize(15)
 
     # remove the errorbars in legend
     handles, labels = ax.get_legend_handles_labels()
     handles = [h[0] for h in handles]
     ax.legend(handles, labels,numpoints=1)
     # plot 
-    plt.xlabel('γ')
-    plt.ylabel('E[R(T)]')
+    plt.gcf().subplots_adjust(bottom=0.15)
+    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+    plt.xlabel(r'$\varrho^{1/3}$',fontsize=15)
+    plt.ylabel(r'E$[R^{\pi}(T)]$',fontsize=15)
     plt.savefig('./result/T'+str(T)+'repeat'+str(repeat)+'ratio_list'+str(ratio_list)+'.png')
     plt.show()
     plt.clf()    
@@ -333,7 +347,7 @@ if __name__=='__main__':
     opt = int(sys.argv[1]) ##'1': a in Figure 2, '2': b,c,d in Figure 2
     
     repeat=10  # repeat number of running algorithms with different seeds.
-    run_bool=False ##  True: run model and save data with plot, False: load data with plot.
+    run_bool=True ##  True: run model and save data with plot, False: load data with plot.
     T=10**6  #Maximum Time horizon
     num=10 # number of horizon times over T
     
