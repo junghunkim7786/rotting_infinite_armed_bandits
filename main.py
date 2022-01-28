@@ -313,13 +313,13 @@ def run_rho(T,ratio_list,repeat,boolean=True): ## regret vs rho
             std_list2[i]=sd2[T-1]
             regret_list3[i]=avg3[T-1]
             std_list3[i]=sd3[T-1]
-    ratio_list=[(1/T)**(i/3) for i in ratio_list]
+    rho_list=[(1/T)**(i/3) for i in ratio_list]
     fig,(ax)=plt.subplots(1,1)
-    ax.errorbar(x=ratio_list, y=regret_list1, yerr=1.96*std_list1/np.sqrt(repeat), color="orange", capsize=3,
+    ax.errorbar(x=rho_list, y=regret_list1, yerr=1.96*std_list1/np.sqrt(repeat), color="orange", capsize=3,
                  marker="^", markersize=7,label='Algorithm 1',zorder=3) 
-    ax.errorbar(x=ratio_list, y=regret_list3, yerr=1.96*std_list3/np.sqrt(repeat), color="b", capsize=3,
+    ax.errorbar(x=rho_list, y=regret_list3, yerr=1.96*std_list3/np.sqrt(repeat), color="b", capsize=3,
                  marker="o", markersize=7,label='Algorithm 2',zorder=2)
-    ax.errorbar(x=ratio_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
+    ax.errorbar(x=rho_list, y=regret_list2, yerr=1.96*std_list2/np.sqrt(repeat), color="g", capsize=3,
                  marker="s", markersize=7,label='SSUCB',zorder=1)
     
     #font size
