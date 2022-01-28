@@ -111,7 +111,7 @@ def run_T(ratio,T,num,repeat,boolean=True): #regret vs T
                 f.close()
     
     else: ##load data
-        
+        print('load data without running')
         for i in range(num):
             print(i)
             if i==0:
@@ -275,7 +275,7 @@ def run_rho(T,ratio_list,repeat,boolean=True): ## regret vs rho
                 f.close()
     
     else: ##load data
-        
+        print('load data without running')
         for i, ratio in enumerate(ratio_list):
             print(i)
             rho=1/T**ratio
@@ -347,7 +347,7 @@ if __name__=='__main__':
     opt = int(sys.argv[1]) ##'1': a in Figure 2, '2': b,c,d in Figure 2
     
     repeat=10  # repeat number of running algorithms with different seeds.
-    run_bool=False ##  True: run model and save data with plot, False: load data with plot.
+    run_bool=True ##  True: run model and save data with plot, False: load data with plot.
     T=10**6  #Maximum Time horizon
     num=10 # number of horizon times over T
     
