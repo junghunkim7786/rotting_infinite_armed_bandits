@@ -347,7 +347,7 @@ if __name__=='__main__':
     opt = int(sys.argv[1]) ##'1': a in Figure 2, '2': b,c,d in Figure 2
     
     repeat=10  # repeat number of running algorithms with different seeds.
-    run_bool=True ##  True: run model and save data with plot, False: load data with plot.
+    run_bool=False ##  True: run model and save data with plot, False: load data with plot.
     T=10**6  #Maximum Time horizon
     num=10 # number of horizon times over T
     
