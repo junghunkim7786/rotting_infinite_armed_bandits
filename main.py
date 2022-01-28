@@ -344,7 +344,7 @@ def run_rho(T,ratio_list,repeat,boolean=True): ## regret vs rho
         
 if __name__=='__main__':
     # Read input
-    opt = int(sys.argv[1]) ##'1': a in Figure 2, '2': b,c,d in Figure 2
+    opt = int(sys.argv[1]) ##'1': a in Figure 3, '2': b,c,d in Figure 3
     
     repeat=10  # repeat number of running algorithms with different seeds.
     run_bool=True ##  True: run model and save data with plot, False: load data with plot.
